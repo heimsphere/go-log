@@ -12,6 +12,29 @@ type Logger struct {
 
 var Log *Logger
 
+func init() {
+	Log = Stderr()
+}
+
+func Stdout() *Logger {
+	return &Logger{Logger: log.New(os.Stdout, "", log.LstdFlags), debug: false}
+}
+
+func Stderr() *Logger {
+	return &Logger{Logger: log.New(os.Stderr, "", log.LstdFlags), debug: false}
+}
+
+type null struct{}
+
+func (w *null) Write(p []byte) (n int, err error) {
+	return len(p), nil
+}
+
+func (l *Logger) Disable() {
+	l.Logger = log.New(&null{}, "", log.LstdFlags)
+	l.debug = false
+}
+
 func (l *Logger) EnableDebug() {
 	l.debug = true
 	l.Println("Debug logging enabled.")
@@ -41,73 +64,50 @@ func (l *Logger) Debugln(v ...interface{}) {
 
 // FIXME add ERROR prefix
 func (l *Logger) Error(v ...interface{}) {
-	l.Print(v)
+	l.Print(v...)
 }
 
 func (l *Logger) Errorf(format string, v ...interface{}) {
-	l.Printf("ERROR: "+format, v)
+	l.Printf("ERROR: "+format, v...)
 }
 
 // FIXME add ERROR prefix
 func (l *Logger) Errorln(v ...interface{}) {
-	l.Println(v)
-}
-
-func Stdout() *Logger {
-	return &Logger{Logger: log.New(os.Stdout, "", log.LstdFlags), debug: false}
-}
-
-func Stderr() *Logger {
-	return &Logger{Logger: log.New(os.Stderr, "", log.LstdFlags), debug: false}
-}
-
-type null struct{}
-
-func (w *null) Write(p []byte) (n int, err error) {
-	return len(p), nil
-}
-
-func (l *Logger) Disable() {
-	l.Logger = log.New(&null{}, "", log.LstdFlags)
-	l.debug = false
-}
-
-func init() {
-	Log = Stderr()
+	l.Println(v...)
 }
 
 func Debugln(v ...interface{}) {
-	Log.Debugln(v)
+	Log.Debugln(v...)
 }
 
 func Debug(v ...interface{}) {
-	Log.Debug(v)
+	Log.Debug(v...)
 }
 
 func Debugf(fmt string, v ...interface{}) {
-	Log.Debugf(fmt, v)
+	Log.Debugf(fmt, v...)
 }
 
 func Println(v ...interface{}) {
-	Log.Println(v)
+	Log.Println(v...)
 }
 
 func Print(v ...interface{}) {
-	Log.Print(v)
+	Log.Print(v...)
 }
 
 func Printf(fmt string, v ...interface{}) {
-	Log.Printf(fmt, v)
+	Log.Printf(fmt, v...)
 }
 
 func Errorln(v ...interface{}) {
-	Log.Errorln(v)
+	Log.Errorln(v...)
 }
 
 func Error(v ...interface{}) {
-	Log.Error(v)
+	Log.Error(v...)
 }
 
 func Errorf(fmt string, v ...interface{}) {
-	Log.Errorf(fmt, v)
+	Log.Errorf(fmt, v...)
 }
